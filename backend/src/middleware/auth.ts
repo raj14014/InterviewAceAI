@@ -1,0 +1,3 @@
+import {Request,Response,NextFunction} from 'express'; import jwt from 'jsonwebtoken'; import {env} from '../config/env';
+export interface AuthRequest extends Request{userId?:string}
+export function auth(req:AuthRequest,res:Response,next:NextFunction){const token=req.headers.authorization?.replace('Bearer ',''); if(!token)return res.status(401).json({success:false,error:{code:'UNAUTHORIZED',message:'Authentication required'}}); try{const p=jwt.verify(token,env.JWT_SECRET) as {id:string};req.userId=p.id;next()}catch{return res.status(401).json({success:false,error:{code:'INVALID_TOKEN',message:'Invalid or expired token'}})}}

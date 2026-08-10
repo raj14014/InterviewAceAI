@@ -1,0 +1,4 @@
+import {Router} from 'express'; import {auth,AuthRequest} from '../middleware/auth'; import {JobDescription} from '../models/JobDescription'; import {Resume} from '../models/Resume'; import {getAIProvider} from '../providers'; import {z} from 'zod';
+const r=Router();
+r.post('/analyze',auth,async(req:AuthRequest,res)=>{const input=z.object({text:z.string().min(30),title:z.string().optional(),company:z.string().optional()}).parse(req.body);const resume=await Resume.findOne({userId:req.userId}).sort({createdAt:-1});const a=await getAIProvider().analyzeJob(input.text,resume?.text||'');const j=await JobDescription.create({userId:req.userId,...input,analysis:a,match:a.match});res.status(201).json({success:true,data:j});});
+r.get('/',auth,async(req:AuthRequest,res)=>res.json({success:true,data:await JobDescription.find({userId:req.userId}).sort({createdAt:-1})}));export default r;

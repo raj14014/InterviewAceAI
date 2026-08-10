@@ -1,0 +1,29 @@
+services:
+  mongo:
+    image: mongo:8
+    restart: unless-stopped
+    ports: ["27017:27017"]
+    volumes: ["mongo_data:/data/db"]
+  api:
+    build: ./backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 5000
+      CLIENT_URL: http://localhost:5173
+      MONGODB_URI: mongodb://mongo:27017/interviewaceai
+      JWT_SECRET: change-me-in-production
+      AI_PROVIDER: mock
+    ports: ["5000:5000"]
+    depends_on: [mongo]
+  web:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+      args:
+        VITE_API_URL: http://localhost:5000/api
+    restart: unless-stopped
+    ports: ["5173:80"]
+    depends_on: [api]
+volumes:
+  mongo_data:

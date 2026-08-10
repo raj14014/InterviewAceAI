@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: interviewaceai-api
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: CLIENT_URL
+        sync: false
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: AI_PROVIDER
+        value: mock
+      - key: OPENAI_API_KEY
+        sync: false

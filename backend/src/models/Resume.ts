@@ -1,0 +1,2 @@
+import mongoose from 'mongoose';
+const schema=new mongoose.Schema({userId:{type:mongoose.Schema.Types.ObjectId,ref:'User',required:true,index:true},filename:String,text:String,storageUrl:String,analysis:{atsScore:Number,resumeScore:Number,skills:[String],strengths:[String],weaknesses:[String],missingKeywords:[String],missingSkills:[String],formattingIssues:[String],recommendations:[String] }},{timestamps:true}); export const Resume=mongoose.model('Resume',schema);
